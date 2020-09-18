@@ -1,9 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {MongoClient} from 'mongodb';
+import path from 'path';
 
 //We use express as our server for the app
 const app = express();
+
+//Run data to build version of the blog
+app.use(express.static(path.join(__dirname, '/build')));
 
 //Reads the contents from the body with JSON formats
 app.use(bodyParser.json());
@@ -65,6 +69,11 @@ app.post('/api/articles/:name/add-comment', (req, res) => {
 
         res.status(200).json(updatedArticleInfo);
     }, res);
+});
+
+//Allows us to move between pages
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/build/index/html'));
 });
 
 //Creates localhost that listens in port 8000
